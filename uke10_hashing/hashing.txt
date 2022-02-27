@@ -1,0 +1,119 @@
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg: En god hashfunksjon på strenger
+Input: En streng s og et positivt heltall N (der N er størrelsen på arrayet)
+Output: Et heltall h slik at 0 <= h < N, dvs. indeksen s hasher til
+-------------------
+def HashString(s, N):
+    h = 0
+    for every letter c in s do:
+        h = (31 * h) + charToInt(c)
+    end
+    return h mod N
+-------------------
+
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    KOLLISJONSHÅNDTERING
+    Antar at vi har et array A med størrelse N,
+    som inneholder mindre enn N elementer.
+
+    "Separate chaining"
+    Hver plass i arrayet peker til en "bøtte", bøttene kan
+    f.eks. være lenket liste, eller binære søketrær
+
+    "Linear probing"
+    Vi bruker kun arrayet, og ved en kollisjon ser vi etter
+    neste ledige plass i arrayet
+
+    Load factor
+    Antall elementer i listen i forhold til lengden av listen, n/N
+    Mellom 0.5 og 0.75
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+Separate chaining
+
+def settInn_SepChain(key, value):
+    i = hash(key)
+
+    bucket = A[i]
+    if bucket == null then:
+        newBucket = new LinkedList().add(Element(key, value))
+        A[i] = newBucket
+    else:
+        for Element(k,v) in bucket do:
+            if key == k then:
+                element.v = value
+                return
+        end
+        bucket.add(Element(key, value))
+
+def oppslag_SepChain(key):
+    i = hash(key)
+
+    bucket = A[i]
+    if bucket == null then:
+        return null
+    
+    for Element(k,v) in bucket do:
+        if key == k then:
+            return Element(k,v)
+    end
+    return null
+
+def sletting_SepChain(key):
+    i = hash(key)
+
+    bucket = A[i]
+    if bucket == null then:
+        return null
+    
+    for Element(k,v) in bucket do:
+        if key == k then:
+            Fjern Element(k,v)
+            return Element(k,v)
+    end
+    return null
+
+    
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+Linear probing
+
+def settInn_LinProb(i, key, value):
+    if A[i] == null then:
+        A[i] = Element(key, value)
+    else if A[i].k == key then:
+        A[i].v = value
+    else:
+        i = (i + 1) mod N   #Wrapper rundt i tilfelle vi får i = N
+        settInn_LinProb(i, key, value)
+
+def oppslag_LinProb(i, key):
+    if A[i] == null then:
+        return null
+    else if A[i].k == key then:
+        return A[i]
+    else:
+        i = (i + 1) mod N
+        oppslag_LinProb(i, key)
+    
+def sletting_LinProb(i, key):
+    if A[i] == null then:
+        return null
+    
+    # Det ligger noe paa indeksen
+    if A[i].k != key then:
+        i = (i + 1) mod N
+        sletting_LinProb(i, key)
+
+    else if A[i].k == key then:
+        returverdi = A[i]
+        // Marker plassen som slettet, bruker et tomt element
+        A[i] = Element(null, null)
+        return returverdi
+
+Om vi skal tette hullet "ordentlig", så leter vi nedover til vi finner en key som gir hash(key) <= indeksen hullet er på.
+Når vi finner et slikt element, så flytter vi det til hullet.
+Nå må vi sjekke om vi må fylle dette nye hullet også, på samme måte.
+Vi fortsetter helt til vi kommer til en tom indeks.

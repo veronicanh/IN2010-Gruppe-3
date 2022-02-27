@@ -1,0 +1,72 @@
+Uvektede grafer: BFS
+
+Vektede, rettede grafer
+    - kanter med kun positiv vekt: Dijkstra
+    - kanter med både + og - vekt: Bellman-Ford
+
+
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg: Dijkstra algoritme
+Input: En vektet, sammenhengende graf G, og en startnode s
+Output: Liste med vekten av den korteste veien fra s til alle noder i G
+-------------------
+def Dijkstra(G, startNode):
+    Q = new empty Heap
+    for each node in G do:
+        Distance[node] = infinite
+        Q.insert(node, Distance[node])
+
+    Distance[startNode] = 0
+    while Q not empty do:
+        node = Q.removeMin()
+        
+        for edge e = (node, t) in G do:
+            if (Distance[node] + weight(e)) < Distance[t] then:
+                Distance[t] = Distance[node] + weight(e)
+                change value of t in Q to Distance[t]
+        end
+    end
+
+    return D
+-------------------
+Ideen bak er et BFS som tar høyde for kantenes vekt
+Analysen antar at
+    1. Bruker naboliste representasjon av G
+    2. Binær heap for Q
+
+O((|V| + |E|)log(|V|))
+ = O (|E| log(|V|))
+-------------------
+
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg: Bellman-Ford, finner korteste sti eller oppdager negative sykler
+Input: En vektet, sammenhengende graf G, og en startnode s
+Output: Liste med vekten av den korteste veien fra s til alle noder i G
+-------------------
+def BellmanFord(G, startNode):
+    for each node in G do
+        D[node] = infinite
+    end
+
+    D[startNode] = 0
+    
+    # oppdaterer estimert avstand D for alle noder, |V|−1 ganger
+    for i from 1 to |V|−1 do:
+        for edge (u,v) in G do:
+            if (D[u] + weight(u, v)) < D[v] then:
+                D[v] = D[u] + weight(u, v)
+        end
+    end
+
+    # Om vi finner en kortere vei etter at vi egentlig er ferdig, så har vi funnet en negativ sykel
+    for edge (u,v) in G do:
+        if D[u] + weight((u, v)) < D[v] then:
+            return “G has a negative cycle”
+    end
+    return D
+-------------------
+O(|V|·|E|)
+Finner korteste sti eller oppdager negative sykler
+-------------------

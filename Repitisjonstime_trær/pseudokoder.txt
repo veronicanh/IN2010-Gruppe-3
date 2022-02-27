@@ -1,0 +1,221 @@
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg: Innsetting i et binært søketre / AVL-tre
+Input: En node v og en data x
+Output: En oppdatert node v der en node som inneholder x er en etterkommer av v
+-------------------
+def Insert(v, x):
+    # Setter inn node
+    if v == null then:
+        return new Node(x) #Antar at noder opprettes med height = 0
+
+    # Node skal settes inn i venstre sub-tre
+    else if x < v.data then:
+        v.left = Insert(v.left, x)
+
+    # Node skal settes inn i høyre sub-tre
+    else if x > v.data then:
+        v.right = Insert(v.right, x)
+
+    return v
+
+    '''
+    AVL, istedenfor return v:
+    v.height = 1 + max(Height(v.left), Height(v.right))
+    return Balance(v)
+    '''
+-------------------
+# O(Høyden på treet)
+Ubalansert: O(n)
+Balansert:  O(log(n))
+-------------------
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg: Oppslag i et binært søketre / AVL-tre
+Input: En node v og en data x
+Output: Dersom x forekommer i en node u som en etterkommer av v, returner u, ellers null.
+-------------------
+def Search(v, x):
+    # Har enten funnet elementet,
+    # eller funnet ut at det ikke er i treet
+    if v == null then:
+        return null
+    else if x == v.data then:
+        return v
+
+    # Finner elementet i venstre sub-tre
+    if x < v.data then:
+        return Search(v.left, x)
+    
+    # Finner elementet i høyre sub-tre
+    else if x > v.data then:
+        return Search(v.right, x)
+-------------------
+# O(Høyden på treet)
+Ubalansert: O(n)
+Balansert:  O(log(n))
+-------------------
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg: Slett en node i et binært søketre / ALV-tre
+Input: En node v og en data x
+Output: Dersom x forekommer i en node u som en etterkommer av v, fjern u.
+-------------------
+def Remove(v, x):
+    if v == null then:
+        return null
+
+    # Node skal fjernes fra venstre subtre,
+    # returnerer oppdatert subtre der noden er fjernet
+    if x < v.data then:
+        v.left = Remove(v.left, x)
+    else if x > v.data then:
+        v.right = Remove(v.right, x)
+    
+
+    # Skjer når vi er i noden som skal fjernes:
+
+    # Kun ett barn (eller ingen, da vil v.right også være null)
+    else if v.left == null then:
+        v = v.right
+    # Kun ett barn:
+    else if v.right == null then:
+        v = v.left
+    
+    # Skjer når vi har både venstre og høyre barn
+    # "Swapper" v sin data med den minste på høyresiden, og fjerner deretter den minstre fra subtreet
+    else:
+        u = FindMin(v.right)
+        v.data = u.data
+        v.right = Remove(v.right, u.element)
+
+    return v
+    '''
+    AVL, istedenfor return v:
+    v.height = 1 + max(Height(v.left), Height(v.right))
+    return Balance(v)
+    '''
+-------------------
+# O(Høyden på treet)
+Ubalansert: O(n)
+Balansert:  O(log(n))
+-------------------
+
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg: Finn minste node i treet (hjelpe-alg)
+Input: En node v, som er roten i ett AVL-(sub)tre
+Output: Returner noden med den minste dataen i treet
+-------------------
+def FindMin(v):
+    if node.left == null then:
+        return node
+    else then:
+        return findMin(node.left)
+-------------------
+
+
+
+
+
+
+
+
+
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    AVL-TRÆR
+    Oppfyller de samme egenskapene som ordinære binære søketrær
+    - I tillegg:
+    For hver node i et AVL-tre, så må høydeforskjellen på
+    venstre og høyre subtre være mindre eller lik 1.
+    AVL-trær er selvbalanserende.
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg: Venstrerotasjon av et AVL-Binærtre
+Input: En node z
+Output: Roter treet til venstre, slik at y blir den nye roten
+-------------------
+def LeftRotate(z):
+    y = z.right
+    t1 = y.left
+
+    y.left = z
+    z.right = t1
+
+    z.height = 1 + max(Height(z.left), Height(z.right))
+    y.height = 1 + max(Height(y.left), Height(y.right))
+
+    return y
+-------------------
+  z                          y
+ / \                       /   \ 
+t0  y                     z     x 
+   / \                   / \   / \ 
+  t1  x                 t0 t1 t2 t3        
+     / \                         
+    t2  t3                         
+-------------------
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg: Høyrerotasjon av et AVL-Binærtre
+Input: En node z
+Output: Roter treet til høyre, slik at y blir den nye roten
+-------------------
+def RightRotate(z):
+    y = z.left
+    t2 = y.right
+
+    y.right = z
+    z.left = t2
+
+    z.height = 1 + max(Height(z.left), Height(z.right))
+    y.height = 1 + max(Height(y.left), Height(y.right))
+
+    return y
+-------------------
+      z                      y
+     / \                   /   \ 
+    y   t3                x     z 
+   / \                   / \   / \ 
+  x   t2                t0 t1 t2 t3        
+ / \                      
+t0  t1                       
+-------------------
+
+
+
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg: Balansering av et AVL-tre
+Input: En node v
+Output: En balansert node
+-------------------
+def Balance(v):
+    if BalanceFactor(v) < -1 then:
+        if BalanceFactor(v.right) > 0 then:
+            v.right = RightRotate(v.right)
+        return LeftRotate(v)
+    if BalanceFactor(v) > 1 then:
+        if BalanceFactor(v.left) < 0 then:
+            v.left = LeftRotate(v.left)
+        return RightRotate(v)
+    return v
+-------------------
+
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg: Balansefaktoren av en node
+Input:  En node v
+Output: Returner høydeforskjellen på v sitt venstre- og høyrebarn
+-------------------
+def BalanceFactor(v)
+    if v == null then:
+        return 0
+    return height(v.left) − height(v.right)
+-------------------
+0 = balansert
+positivt = venstretung
+negativt = høyretungt
+-------------------

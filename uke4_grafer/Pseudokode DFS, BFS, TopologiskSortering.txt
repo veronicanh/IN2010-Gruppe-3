@@ -1,0 +1,79 @@
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg:    DFS, Dybde-først søk
+Input:  En graf G og en startnode s
+Output: Alle noder som kan nås fra s
+-------------------
+def DFS(G,s):
+    visited(s) = true                   # Markerer start-noden som besøkt
+    for each edge (s,v) do:             # For hver kant ut fra start-noden,
+        if visited(v) = false then:     # om kanten leder til en ikke-besøkt node,
+            DFS(G,v)                    # kall på DFS med den
+    end
+-------------------
+O(|V|+|E|)
+Basert på tanken bak stack: Last in, first out
+-------------------
+
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg:    BFS, Bredde-først søk
+Input:  En graf G og en startnode s
+Output: Alle noder som kan nås fra s
+-------------------
+def BFS(G,s):
+    queue = new empty []                     
+
+    visited(s) = true                   # Markerer start-noden som besøkt
+    queue.add(s)                        # og legger den til i køen
+
+    while queue.size() != 0:            # Mens det er noder igjen i køen,
+        v = queue.pop(0)                # fjern neste node
+
+        for each edge (v, w) do:        # For hver kant ut fra noden,
+            if visited(w) = false then: # om kanten leder til en ikke-besøkt node,
+                visited(w) = true       # så besøker vi den
+                queue.add(w)            # og legger den til i køen
+            end
+        end
+    end
+-------------------
+O(|V|+|E|)
+Basert på tanken bak kø: First in, first out
+-------------------
+
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg: Topologisk Sortering
+Input: En graf G med n noder (DAG-graf: rettede, asykliske)
+Output: En topologisk ordning av nodene i G,
+        eller G har en sykel
+-------------------
+def TopologiskSortering(G):
+    S = new empty Stack
+    for each vertex v in G do:          # Legger til alle noder med null inngående kanter
+        if inDeg(v) == 0 then:          # (dvs. inDeg=0) på stacken
+            S.push(v)
+    end
+
+    i = 0                               # Teller for antall elementer vi "utfører"
+    output = []
+    while S not empty do:               # Mens vi enda har flere ting igjen å "uføre"
+        v = S.pop()                     # Plukker ut en node og
+        output[i] = v                   # "utfører" den
+        i += 1
+
+        for each edge (v,w) do:         # Minsker inDeg for alle naboene til v,
+            inDeg(w) -= 1
+            if inDeg(w) == 0 then:      # legger dem til på stacken om de får inDeg = 0
+                S.push(w)
+        end
+    end
+
+    if i == G.size() then:
+        return output    
+    else:                               # Om vi ikke har utført like mange noder 
+        return "G has a cycle"          # som det er i grafen, så har vi en syklus
+-------------------
+Stack: Last in, first out
+O(|V|+|E|)
+-------------------

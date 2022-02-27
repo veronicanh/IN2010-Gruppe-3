@@ -1,0 +1,142 @@
+Uvektede grafer, for å finne spenntre: DFS eller BFS
+
+Vektede, sammenhengende grafer:
+OBS! Det er ikke noe problem med negative vekter, iallefall for Prims og Kruskals. De velger den laveste
+fra hepaen, og heapen behandler ikke negative tall annerledes. Man kan unngå hele problematikken med å bare
+plusse et høyt tall på alle kant-vektene, siden det vi egentlig bryr oss om er å se på forskjellene på vektene
+til de ulike kantene.
+
+
+Alle har: O(|E| * log(|V|))
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg: Prims algoritme, grådige noder
+Input: En vektet, sammenhengende graf G
+Output: Et minimalt spenntre for G
+-------------------
+def Prim(G):
+    Tree = new empty Tree
+    Q = new empty Heap #minimal Heap, (altså en priorityQueue)
+    kostnad = []
+
+    # Legger til alle vertex/noder, i en node som også har billigste kant til den fra spenntreet
+    # De legges til sammen med kostnaden til å komme dit, og heapen sorterer dem etter denne
+    for each vertex v in G do:
+        kostnad[v] = infinite  #Alle starter med "uendelig" kostnad, denne skal senkes etterhvert
+        n = (v, None)  #v er en vertex/node, og None er en kant fra treet til den
+        Q.insert(n, kostnad[v])
+    end
+
+    # Velger en tilfeldig vertex/node å starte fra, og setter deres kostnad til å være 0
+    # Da blir de første som plukkes ut av Q når vi går inn i while-løkken
+    pick v from V
+    set D[v] = 0
+
+    while Q not empty do:
+        (a, edge) = Q.removeMin() # Plukker ut noden som har lavest kostnad å komme seg til
+        Tree.add(a, edge)         # Og legger den til i spenntreet vi bygger opp
+        
+        # Oppdaterer avstanden fra spenntreet vi bygger opp til alle noder som ikke er med i treet
+        # Dvs. sjekk alle kanter ut fra noden a til en node b, der b enda ikke er plukket ut av Q
+        for Edge e = (a, b) with b in Q do:
+            if e.weight < kostnad[b] then:
+                kostnad[b] = e.weight
+                Change entry of b in Q to ((b, e), kostnad[b])
+        end
+    end
+-------------------
+O((|V|+|E|)log(|V|))
+ = O(|E| * log(|V|))
+
+Prim’s algorithm gives connected component as well as it works only on connected graph.
+-------------------
+
+
+
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg: Kruskals algoritme, grådige kanter
+Input: En vektet, sammenhengende graf G
+Output: Et minimalt spenntre for G
+-------------------
+def Kruskal(Q):
+    Tree = new empty Tree
+    Q = new empty Heap
+
+    for each edge e in G do:
+        Q.insert(e)
+    end
+
+    for each vertex v in G do:
+        define Cluster(v) = {v}
+    end
+
+    while Tree has fewer than n-1 edges do:
+        (u, v) = Q.removeMin()
+
+        # Om nodene u og v ikke allerede er en del av samme cluster,
+        # dvs. kanten mellom dem er ikke lagt til i spenntreet vi bygger opp enda
+        if Cluster(u) != Cluster(v) then:
+            add (u, v) to Tree
+            Cluster(u) = Combine(Cluster(u), Cluster(v))
+            Cluster(v) = Combine(Cluster(u), Cluster(v))            
+    end
+    return T
+-------------------
+O(log(|E|)) er O(log(|V|^2))= O(2log(|V|))
+ = O(|E| * log|V|)
+Bedre for tynne grafer
+Bedre om man allerede har kantene sortert etter vekt
+Kruskal’s algorithm can generate forest(disconnected components) at any instant as well as it can work on disconnected components
+-------------------
+
+
+
+
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Alg: Boruvkas algoritme, grådige kanter
+Input: En vektet, sammenhengende graf G
+Output: Et minimalt spenntre for G
+-------------------
+def Boruvka(G):
+    T = new empty Tree
+
+    # Hver node starter som sin egen komponent
+    for each vertex v in G do:
+        add v to T
+    end
+
+    while T has more than one component do:
+        # for hver komponent i treet
+        for each component C in T do:
+            # for hver node i komponenten
+            for each vertex v in C do:
+                # sett nodens komponent til å være C
+                Comp(v) = C
+            end
+            cheapest(C) = None  # billigste kant ut fra denne komponenten
+        end
+
+        for each edge e=(u,v) in G do:
+            if Comp(u) != Comp(v) then: #dvs. om kanten forbinder to ulike komponenter
+
+                # Sjekker om denne edgen er billigere enn den nåværende billigste ut fra komponenten til u, w=weight
+                if w(e) < w(cheapest(Comp(u))) then:
+                    cheapest(Comp(u)) = e
+                # Samme greia, men for komponenten til v
+                if w(e) < w(cheapest(Comp(v))) then: #sjekker
+                    cheapest(Comp(v)) = e
+        end
+
+        for each cheapest(C) != None do:
+            add cheapest(C) to T
+        end
+    end
+    return T
+-------------------
+O((|V| + |E|)log(|V|))
+ = O(|E|log(|V|))
+
+Parallelliserbar
+-------------------
