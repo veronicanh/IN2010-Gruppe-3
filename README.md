@@ -1,4 +1,4 @@
-_Ressurser for gruppetimer. Kopi fra UiO-github, https://github.uio.no/veroninh/IN2010-Gruppe-3_
+_Ressurser til gruppetimer. Kopi fra UiO-github: https://github.uio.no/veroninh/IN2010-Gruppe-3_
 
 # IN2010 Gruppe 3
 Her vil foiler, kode, figurer osv. fra gruppetimene publiseres.
